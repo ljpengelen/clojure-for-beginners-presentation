@@ -317,3 +317,124 @@ nil
   ;; Nice-to-have default functions
 
   (map identity [6 7 8]))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; Try this at home
+;; ================
+
+;; Visit https://cfb.cofx.nl/ and try the first few exercises.
+;; 
+;; Stop when you see '->>'.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; ___  ___                         
+;; |  \/  |                         
+;; | .  . | __ _  ___ _ __ ___  ___ 
+;; | |\/| |/ _` |/ __| '__/ _ \/ __|
+;; | |  | | (_| | (__| | | (_) \__ \
+;; \_|  |_/\__,_|\___|_|  \___/|___/
+
+;; Composing functions can get cumbersome
+
+(apply + (filter #(> % 5) (filter even? [1 2 3 4 5 6 7 8 9 10])))
+
+;; The thread-last macro improves readability
+
+(->> [1 2 3 4 5 6 7 8 9 10]
+     (filter even?)
+     (filter #(> % 5))
+     (apply +))
+
+(macroexpand '(->> [1 2 3 4 5 6 7 8 9 10]
+                   (filter even?)
+                   (filter #(> % 5))
+                   (apply +)))
+
+(macroexpand '(->> x
+                   (f y)
+                   g
+                   h))
+
+;; There's also a thread-first macro
+
+(-> (java.time.LocalDate/now)
+    (.plusDays 1)
+    (.plusWeeks 1)
+    str)
+
+;; You can create your own macros
+
+(defmacro rev [& x]
+  (println x)
+  (reverse x))
+
+(rev 1 2 3 +)
+
+(macroexpand '(rev 2 3 *))
+
+;; One use case: avoiding expensive evaluation of arguments
+
+(defn unless-as-fn [test then else]
+  (if (not test) then else))
+
+(defn expensive-fn []
+  (Thread/sleep 2000)
+  "expensive")
+
+(defn cheap-fn [] "cheap")
+
+(unless-as-fn false (cheap-fn) (expensive-fn)) ;; Takes two seconds
+
+(defmacro unless-as-macro [test then else]
+  `(if (not ~test) ~then ~else))
+
+(unless-as-macro false (cheap-fn) (expensive-fn)) ;; Returns immediately
+
+(macroexpand '(unless-as-macro false (cheap-fn) (expensive-fn)))
+
+;; See https://purelyfunctional.tv/mini-guide/when-to-use-a-macro-in-clojure/ for other use cases
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; Try this at home
+;; ================
+
+;; Visit https://cfb.cofx.nl/ and try the next two exercises.
