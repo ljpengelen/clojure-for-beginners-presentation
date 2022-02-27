@@ -38,6 +38,7 @@
 
 
 ;; What is Clojure?
+;; ================
 
 ;; Clojure is a programming language that is
 ;;
@@ -114,6 +115,7 @@
 
 
 ;; What is Clojure?
+;; ================
 
 ;; Clojure is a programming language that is
 ;;
@@ -283,7 +285,7 @@ nil
 
 (map (fn [x] (* x x)) [5 6 7 8])
 
-;; Using a function literal, also because naming function parameters is also hard
+;; Using a function literal, because naming function parameters is also hard
 
 (map #(* % %) [10 11 12 13])
 
