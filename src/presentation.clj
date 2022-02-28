@@ -398,6 +398,8 @@ nil
 
 (macroexpand '(rev 2 3 *))
 
+(repeatedly 10 #(rev 1 2 +))
+
 ;; One use case: avoiding expensive evaluation of arguments
 
 (defn unless-as-fn [test then else]
@@ -413,6 +415,9 @@ nil
 
 (defmacro unless-as-macro [test then else]
   `(if (not ~test) ~then ~else))
+
+;; You could compare the above with template literals in JavaScript:
+;; `The value of variable x is ${x}`
 
 (unless-as-macro false (cheap-fn) (expensive-fn)) ;; Returns immediately
 
@@ -437,4 +442,4 @@ nil
 ;; Try this at home
 ;; ================
 
-;; Visit https://cfb.cofx.nl/ and try the next two exercises.
+;; Visit https://cfb.cofx.nl/ and try the next three exercises.
