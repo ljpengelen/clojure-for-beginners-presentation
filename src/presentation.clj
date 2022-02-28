@@ -302,6 +302,7 @@ nil
   (last [1 2 3 4])
   (take 10 (cycle [1 2]))
   (take 10 (iterate inc 9))
+  (partition 3 2 (range 10))
 
   (filter odd? [5 6 7 8 9 10])
   (remove odd? [5 6 7 8 9 10])
@@ -316,7 +317,25 @@ nil
 
   ;; Nice-to-have default functions
 
-  (map identity [6 7 8]))
+  (map identity [6 7 8])
+  
+  ;; Functions to create new maps from existing maps
+  
+  (assoc {:one 1} :two 2)
+  (dissoc {:one 1 :two 2} :one)
+  (merge {:one 1} {:two 2})
+  
+  ;; Functions to create new collections from existing collections
+
+  (conj [1 2 3] 4)
+  (conj '(1 2 3) 4)
+  (concat [1 2 3] [4 5 6])
+  (concat '(1 2 3) '(4 5 6))
+
+  ;; Functions you didn't know you needed
+
+  (frequencies [1 2 3 3 1 2 3 3 1 3 3 2 1 2 3 3 2 1 1])
+  (interpose 42 (range 9)))
 
 
 
