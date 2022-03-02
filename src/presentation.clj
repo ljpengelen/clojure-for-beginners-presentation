@@ -396,8 +396,8 @@ nil
                    (apply +)))
 
 (macroexpand '(->> x
-                   (f y)
-                   g
+                   (f 1)
+                   (g 2 3)
                    h))
 
 ;; There's also a thread-first macro
