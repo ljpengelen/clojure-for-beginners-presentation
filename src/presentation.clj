@@ -462,3 +462,174 @@ nil
 ;; ================
 
 ;; Visit https://cfb.cofx.nl/ and try the next three exercises.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;  _____                  _           _     ___  _ ___  
+;; /  ___|                | |         | |   |__ \| |__ \ 
+;; \ `--.  ___   __      _| |__   __ _| |_     ) | |  ) |
+;;  `--. \/ _ \  \ \ /\ / / '_ \ / _` | __|   / /| | / / 
+;; /\__/ / (_) |  \ V  V /| | | | (_| | |_   |_| |_||_|  
+;; \____/ \___/    \_/\_/ |_| |_|\__,_|\__|  (_) (_)(_)  
+
+;; Immutable, persistent data structures
+
+(def short-list [1 2 3])
+(def longer-list (conj short-list 4 5 6))
+
+short-list ;; Unmodified
+longer-list ;; Reuses short-list under the hood
+
+(def complex-map
+  {:name "Luc"
+   :presentations [{:name "Clojure for beginners"
+                    :venue "DevConf 2022"}]})
+
+(def modified-map (-> complex-map
+                      (update :name #(str % " Engelen"))
+                      (assoc :age 40)
+                      (assoc-in [:presentations 0 :year] 2022)))
+
+complex-map ;; Unmodified
+modified-map ;; Reuses complex-map under the hood
+
+;; Pure functions and immutable data structures have attractive properties that are useful in any language
+;; - Easy to reason about
+;; - Easy to test
+
+;; Functions with side effects can lead to unpleasant surprises
+
+(comment
+  "
+   const x = [65, 12, 0];
+   const smallest = a => a.sort()[0];
+   smallest(x);
+   x
+")
+
+;; Copy before modify is cumbersome as well as potentially expensive and dangerous
+
+(comment
+  "
+   const smallest = a => {
+     const b = [...a];
+     return b.sort()[0];
+   }
+")
+
+;; Persistent data structures lead to more efficient implementations of pure functions
+
+;; Clojure libraries mostly revolve around these simple data structures combined with custom functions and a few macros
+
+;; Sticking to these data structures 
+;; - allows use of the rich standard library
+;; - elimates the need to introduce boilerplate classes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;   ___        _                 _                     _                         
+;;  / _ \      (_)               | |                   | |                        
+;; / /_\ \  ___ _ _ __ ___  _ __ | | ___  __      _____| |__     __ _ _ __  _ __  
+;; |  _  | / __| | '_ ` _ \| '_ \| |/ _ \ \ \ /\ / / _ \ '_ \   / _` | '_ \| '_ \ 
+;; | | | | \__ \ | | | | | | |_) | |  __/  \ V  V /  __/ |_) | | (_| | |_) | |_) |
+;; \_| |_/ |___/_|_| |_| |_| .__/|_|\___|   \_/\_/ \___|_.__/   \__,_| .__/| .__/ 
+;;                         | |                                       | |   | |    
+;;                         |_|                                       |_|   |_|    
+
+(require '[org.httpkit.server :as http-kit]
+         '[clojure.pprint :refer [pprint]])
+
+;; Plain function from map to map
+
+(defn hello-world [request]
+  (pprint request)
+  {:body "Hello World!"})
+
+(hello-world {})
+
+(comment
+  (def stop! (http-kit/run-server hello-world {:port 3000 :join? false}))
+  (stop!))
+
+;; Using the request map, the hard way
+
+(defn hello-name [{:keys [uri]}]
+  {:body (str "Hello " (subs uri 1))})
+
+(hello-name {:uri "/world"})
+
+(comment
+  (def stop! (http-kit/run-server hello-name {:port 3000 :join? false}))
+  (stop!))
+
+;; Using the request map, using a routing library
+
+(require '[compojure.core :refer [defroutes GET]]
+         '[compojure.route :as route])
+
+(defroutes hello-with-compojures
+  (GET "/hello/:name" [name] (str "Hello " name))
+  (GET "/ola/:name" [name] (str "Ola " name))
+  (route/not-found "Page not found"))
+
+(comment
+  (def stop! (http-kit/run-server hello-with-compojures {:port 3000 :join? false}))
+  (stop!))
+
+;; Examining a route
+
+(def get-route (GET "/test" [] "Test"))
+
+(get-route {})
+(get-route {:uri "/test"})
+(get-route {:uri "/test"
+    :request-method :get})
+
+;; Generating HTML from vectors
+
+(require '[hiccup.core :as hc]
+         '[hiccup.page :as hp])
+
+(def dwarfs ["Doc" "Dopey" "Bashful" "Grumpy" "Sneezy" "Sleepy" "Happy"])
+
+(defn to-html-list [items]
+  [:ul (for [item items] [:li item])])
+
+(to-html-list dwarfs)
+
+(hc/html (to-html-list dwarfs))
+
+(hp/html5 (to-html-list dwarfs))
+
+(defn dwarfs-app [_]
+  {:body (-> dwarfs
+             to-html-list
+             hp/html5)})
+
+(comment
+  (def stop! (http-kit/run-server dwarfs-app {:port 3000 :join? false}))
+  (stop!))

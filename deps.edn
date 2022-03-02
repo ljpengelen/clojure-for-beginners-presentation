@@ -2,6 +2,8 @@
         com.github.seancorfield/honeysql {:mvn/version "2.2.858"}
         com.github.seancorfield/next.jdbc {:mvn/version "1.2.761"}
         com.h2database/h2 {:mvn/version "1.4.199"}
+        compojure/compojure {:mvn/version "1.6.2"}
+        hiccup/hiccup {:mvn/version "1.0.5"}
         http-kit/http-kit {:mvn/version "2.5.3"}
         org.clojure/clojure {:mvn/version "1.10.3"}
         ring/ring-core {:mvn/version "1.9.4"}
