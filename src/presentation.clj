@@ -566,14 +566,15 @@ modified-map ;; Reuses complex-map under the hood
 ;; Plain function from map to map
 
 (defn hello-world [request]
+  (println "===")
   (pprint request)
   {:body "Hello World!"})
 
 (hello-world {})
 
 (comment
-  (def stop! (http-kit/run-server hello-world {:port 3000 :join? false}))
-  (stop!))
+  (def stop-hello-world! (http-kit/run-server hello-world {:port 3000 :join? false}))
+  (stop-hello-world!))
 
 ;; Using the request map, the hard way
 
@@ -583,22 +584,22 @@ modified-map ;; Reuses complex-map under the hood
 (hello-name {:uri "/world"})
 
 (comment
-  (def stop! (http-kit/run-server hello-name {:port 3000 :join? false}))
-  (stop!))
+  (def stop-hello-name! (http-kit/run-server hello-name {:port 3000 :join? false}))
+  (stop-hello-name!))
 
-;; Using the request map, using a routing library
+;; Using the request map with a routing library
 
 (require '[compojure.core :refer [defroutes GET]]
          '[compojure.route :as route])
 
-(defroutes hello-with-compojures
+(defroutes hello-with-compojure
   (GET "/hello/:name" [name] (str "Hello " name))
   (GET "/ola/:name" [name] (str "Ola " name))
   (route/not-found "Page not found"))
 
 (comment
-  (def stop! (http-kit/run-server hello-with-compojures {:port 3000 :join? false}))
-  (stop!))
+  (def stop-with-compojure! (http-kit/run-server hello-with-compojure {:port 3000 :join? false}))
+  (stop-with-compojure!))
 
 ;; Examining a route
 
@@ -609,10 +610,36 @@ modified-map ;; Reuses complex-map under the hood
 (get-route {:uri "/test"
     :request-method :get})
 
+;; Easy to test
+
+(=
+ (get-route {:uri "/test" :request-method :get})
+ {:status 200, :headers {"Content-Type" "text/html; charset=utf-8"}, :body "Test"})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;; Generating HTML from vectors
 
 (require '[hiccup.core :as hc]
          '[hiccup.page :as hp])
+
+(hc/html [:html
+          [:body
+           [:p
+            [:b "This is a paragraph in bold."]
+            [:a {:href "https://www.nu.nl/"} "This is a link."]]]])
 
 (def dwarfs ["Doc" "Dopey" "Bashful" "Grumpy" "Sneezy" "Sleepy" "Happy"])
 
@@ -621,15 +648,19 @@ modified-map ;; Reuses complex-map under the hood
 
 (to-html-list dwarfs)
 
-(hc/html (to-html-list dwarfs))
+;; Also easy to test
+(=
+ (to-html-list ["Aap" "Noot" "Mies"])
+ [:ul [[:li "Aap"] [:li "Noot"] [:li "Mies"]]])
 
-(hp/html5 (to-html-list dwarfs))
+;; Easy to apply in larger context
 
 (defn dwarfs-app [_]
-  {:body (-> dwarfs
-             to-html-list
-             hp/html5)})
+  {:body (hp/html5
+          [:h1 "The seven dwarfs"]
+          [:div (to-html-list dwarfs)]
+          [:a {:href "https://en.wikipedia.org/wiki/Seven_Dwarfs"} "More about these dwarfs"])})
 
 (comment
-  (def stop! (http-kit/run-server dwarfs-app {:port 3000 :join? false}))
-  (stop!))
+  (def stop-dwarfs-app! (http-kit/run-server dwarfs-app {:port 3000 :join? false}))
+  (stop-dwarfs-app!))
