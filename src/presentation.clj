@@ -318,13 +318,13 @@ nil
   ;; Nice-to-have default functions
 
   (map identity [6 7 8])
-  
+
   ;; Functions to create new maps from existing maps
-  
+
   (assoc {:one 1} :two 2)
   (dissoc {:one 1 :two 2} :one)
   (merge {:one 1} {:two 2})
-  
+
   ;; Functions to create new collections from existing collections
 
   (conj [1 2 3] 4)
@@ -551,14 +551,14 @@ modified-map ;; Reuses complex-map under the hood
 
 
 
-;;   ___        _                 _                     _                         
-;;  / _ \      (_)               | |                   | |                        
-;; / /_\ \  ___ _ _ __ ___  _ __ | | ___  __      _____| |__     __ _ _ __  _ __  
-;; |  _  | / __| | '_ ` _ \| '_ \| |/ _ \ \ \ /\ / / _ \ '_ \   / _` | '_ \| '_ \ 
-;; | | | | \__ \ | | | | | | |_) | |  __/  \ V  V /  __/ |_) | | (_| | |_) | |_) |
-;; \_| |_/ |___/_|_| |_| |_| .__/|_|\___|   \_/\_/ \___|_.__/   \__,_| .__/| .__/ 
-;;                         | |                                       | |   | |    
-;;                         |_|                                       |_|   |_|    
+;; ______           _        _ _  __                                  
+;; | ___ \         | |      | (_)/ _|                                 
+;; | |_/ /___  __ _| |______| |_| |_ ___   _   _ ___  __ _  __ _  ___ 
+;; |    // _ \/ _` | |______| | |  _/ _ \ | | | / __|/ _` |/ _` |/ _ \
+;; | |\ \  __/ (_| | |      | | | ||  __/ | |_| \__ \ (_| | (_| |  __/
+;; \_| \_\___|\__,_|_|      |_|_|_| \___|  \__,_|___/\__,_|\__, |\___|
+;;                                                          __/ |     
+;;                                                         |___/      
 
 (require '[org.httpkit.server :as http-kit]
          '[clojure.pprint :refer [pprint]])
@@ -608,7 +608,7 @@ modified-map ;; Reuses complex-map under the hood
 (get-route {})
 (get-route {:uri "/test"})
 (get-route {:uri "/test"
-    :request-method :get})
+            :request-method :get})
 
 ;; Easy to test
 
@@ -631,6 +631,7 @@ modified-map ;; Reuses complex-map under the hood
 
 
 ;; Generating HTML from vectors
+;; ============================
 
 (require '[hiccup.core :as hc]
          '[hiccup.page :as hp])
@@ -664,3 +665,182 @@ modified-map ;; Reuses complex-map under the hood
 (comment
   (def stop-dwarfs-app! (http-kit/run-server dwarfs-app {:port 3000 :join? false}))
   (stop-dwarfs-app!))
+
+
+
+
+
+
+
+
+
+
+
+;; Interacting with a database
+;; ===========================
+
+;; Sample data from https://www.w3resource.com/sql/sql-table.php
+
+(require '[next.jdbc :as jdbc])
+
+(def jdbc-url "jdbc:h2:mem:testdb;Mode=Oracle;DB_CLOSE_DELAY=-1")
+
+(def ds (jdbc/get-datasource jdbc-url))
+
+(comment
+  (jdbc/execute! ds ["DROP TABLE AGENTS"])
+  (jdbc/execute! ds ["CREATE TABLE  \"AGENTS\" (
+                      \"AGENT_CODE\" CHAR(6) NOT NULL PRIMARY KEY,
+                      \"AGENT_NAME\" CHAR(40),
+                      \"WORKING_AREA\" CHAR(35),
+                      \"COMMISSION\" NUMBER(10,2),
+                      \"PHONE_NO\" CHAR(15),
+                      \"COUNTRY\" VARCHAR2(25))"]))
+
+(comment
+  (jdbc/execute-one! ds ["INSERT INTO AGENTS VALUES ('A007', 'Ramasundar', 'Bangalore', '0.15', '077-25814763', 'India')"])
+  (jdbc/execute! ds ["SELECT * FROM AGENTS"])
+  (jdbc/execute! ds ["SELECT * FROM AGENTS WHERE AGENT_CODE = ?" "A007"])
+  (jdbc/execute! ds ["SELECT * FROM AGENTS WHERE AGENT_CODE = ?" "A006"]))
+
+;; More user-friendly querying with HugSQL
+
+(require '[hugsql.core :as hugsql])
+
+;; Without the following (or something similar), the linter complains about unresolved symbols
+
+(declare insert-agent! agent-by-code insert-agents!)
+
+(hugsql/def-db-fns "db.sql") ;; Generates functions at compile time to execute queries
+
+(comment
+  (agent-by-code jdbc-url {:code "A007"}))
+
+(comment
+  (insert-agent! jdbc-url {:code "A003"
+                           :name "Alex"
+                           :working-area "London"
+                           :commission "0.13"
+                           :phone-number "075-12458969"
+                           :country "England"}))
+
+(comment
+  (agent-by-code jdbc-url {:code "A003"}))
+
+(comment
+  (insert-agents! jdbc-url
+                  {:agents
+                   [["A008" "Alford" "New York" "0.12" "044-25874365" "United States"]
+                    ["A011" "Ravi Kumar" "Bangalore" "0.15" "077-45625874" "India"]
+                    ["A010" "Santakumar" "Chennai" "0.14" "007-22388644" "India"]
+                    ["A012" "Lucida" "San Jose" "0.12" "044-52981425" "United States"]]}))
+
+(comment
+  (agent-by-code jdbc-url {:code "A012"}))
+
+;; HugSQL is fine (great) for fixed queries
+
+(require '[honey.sql :as sql]
+         '[honey.sql.helpers :as h])
+
+;; HoneySQL transforms maps that define queries into query strings
+
+(def select-all-as-map {:select [:*]
+                        :from [:agents]})
+
+(def select-all-as-string
+  (sql/format select-all-as-map))
+
+(comment
+  (jdbc/execute! ds select-all-as-string))
+
+;; There are helpers for creating well-formed maps
+
+(def get-american-agents (-> (h/select :agent_code :agent_name)
+                             (h/from :agents)
+                             (h/where [:= :country "United States"])
+                             sql/format))
+
+get-american-agents
+
+(comment
+  (jdbc/execute! ds get-american-agents))
+
+;; Since maps are just data, the sky is the limit as far as query generation goes
+
+(defn get-agents-for-country [country]
+  (-> {:select [:agent_code :agent_name]
+       :from :agents
+       :where [:= :country country]}
+      sql/format))
+
+(get-agents-for-country "India")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; Combining what we've seen
+;; =========================
+
+;; We'll create an app that shows a table of all agents in the database,
+;; showing only the columns that appear in the URI.
+
+;; First, a function to extract column names from the URI
+
+(defn uri-to-column-names [uri]
+  (->> (string/split uri #"/")
+       (remove string/blank?)
+       (map string/upper-case)))
+
+(uri-to-column-names "/agent_code/agent_name/country")
+
+;; Second, a function that constructs the query for agent data
+
+(defn agent-query [columns]
+  (let [keywords (map keyword columns)]
+    (-> (apply h/select keywords)
+        (h/from :agents)
+        sql/format)))
+
+(agent-query ["agent_code" "country"])
+
+;; Third, a function that retrieves data for a given collection of columns
+
+(defn agent-data [columns]
+  (jdbc/execute! ds (agent-query columns)))
+
+(comment
+  (agent-data ["agent_code" "phone-no"])
+  (map :AGENTS/AGENT_CODE (agent-data [:agent_code :phone-no])))
+
+(defn agents-app [{:keys [uri]}]
+  (let [columns (uri-to-column-names uri)
+        data (agent-data columns)]
+    {:body (hp/html5
+            [:table
+             [:tr
+              (for [column columns]
+                [:th column])]
+             (for [agent data]
+               [:tr
+                (for [column columns]
+                  [:td ((keyword "AGENTS" column) agent)])])])}))
+
+(comment
+  (agents-app {:uri "/country/phone_no"}))
+
+(comment
+  (def stop-agents-app! (http-kit/run-server agents-app {:port 3000 :join? false}))
+  (stop-agents-app!))
