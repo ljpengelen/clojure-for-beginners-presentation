@@ -563,6 +563,13 @@ modified-map ;; Reuses complex-map under the hood
 (require '[org.httpkit.server :as http-kit]
          '[clojure.pprint :refer [pprint]])
 
+;; A Ring-compatible HTTP server
+;; - translates HTTP requests to maps,
+;; - applies a function from maps to maps to these request maps
+;; - translates the resulting response map to a HTTP response
+
+;; Your application is implemented as a function from maps to maps
+
 ;; Plain function from map to map
 
 (defn hello-world [request]
