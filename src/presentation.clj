@@ -755,8 +755,12 @@ modified-map ;; Reuses complex-map under the hood
 (def select-all-as-map {:select [:*]
                         :from [:agents]})
 
+select-all-as-map
+
 (def select-all-as-string
   (sql/format select-all-as-map))
+
+select-all-as-string
 
 (comment
   (jdbc/execute! ds select-all-as-string))
