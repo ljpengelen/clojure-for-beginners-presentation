@@ -844,3 +844,62 @@ get-american-agents
 (comment
   (def stop-agents-app! (http-kit/run-server agents-app {:port 3000 :join? false}))
   (stop-agents-app!))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; Front-end development
+;; =====================
+
+;; I've created some small example apps to illustrate
+;; Reagent, a popular ClojureScript library for
+;; creating SPAs:
+
+;; https://github.com/ljpengelen/clojurescipt-rsi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;  _____                  _           _             
+;; /  __ \                | |         (_)            
+;; | /  \/ ___  _ __   ___| |_   _ ___ _  ___  _ __  
+;; | |    / _ \| '_ \ / __| | | | / __| |/ _ \| '_ \ 
+;; | \__/\ (_) | | | | (__| | |_| \__ \ | (_) | | | |
+;;  \____/\___/|_| |_|\___|_|\__,_|___/_|\___/|_| |_|
+
+;; You've seen a lot of Clojure in a small amount of time.
+;; You must be in shock.
+
+;; If you like what you saw, I advise you to clone the
+;; repository with this presentation and evaluate some
+;; expressions yourself.
+
+;; https://github.com/ljpengelen/clojure-for-beginners-presentation
+
+;; Some good resources:
+
+;; - https://www.braveclojure.com/
+;; - https://aphyr.com/tags/Clojure-from-the-ground-up
+;; - http://clojurescriptkoans.com/
