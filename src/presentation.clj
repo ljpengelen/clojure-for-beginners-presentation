@@ -566,7 +566,34 @@ modified-map ;; Reuses complex-map under the hood
 ;; A Ring-compatible HTTP server
 ;; - translates HTTP requests to maps,
 ;; - applies a function from maps to maps to these request maps
-;; - translates the resulting response map to a HTTP response
+;; - translates the resulting response map to an HTTP response
+
+;; An HTTP request
+
+(comment
+  "
+   GET /hello-world.txt HTTP/1.1
+   User-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)
+   Host: www.example.org
+   Accept-Language: en-us
+   Accept-Encoding: gzip, deflate
+   Connection: Keep-Alive
+")
+
+;; An HTTP response
+
+(comment
+  "
+   HTTP/1.1 200 OK
+   Date: Mon, 08 Mar 2022 09:50:00 GMT
+   Server: Apache/2.2.14 (Win32)
+   Last-Modified: Wed, 22 Jul 2021 19:10:12 GMT
+   Content-Length: 123
+   Content-Type: text/plain
+   Connection: Closed
+ 
+   Hello world!
+")
 
 ;; As a result, Ring-based applications are implemented as functions from maps to maps
 
