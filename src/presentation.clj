@@ -568,9 +568,9 @@ modified-map ;; Reuses complex-map under the hood
 ;; - applies a function from maps to maps to these request maps
 ;; - translates the resulting response map to a HTTP response
 
-;; Your application is implemented as a function from maps to maps
+;; As a result, Ring-based applications are implemented as functions from maps to maps
 
-;; Plain function from map to map
+;; Plain function from maps to maps
 
 (defn hello-world [request]
   (println "===")
