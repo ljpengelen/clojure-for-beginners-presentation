@@ -723,13 +723,13 @@ modified-map ;; Reuses complex-map under the hood
 
 (comment
   (jdbc/execute! ds ["DROP TABLE AGENTS"])
-  (jdbc/execute! ds ["CREATE TABLE  \"AGENTS\" (
-                      \"AGENT_CODE\" CHAR(6) NOT NULL PRIMARY KEY,
-                      \"AGENT_NAME\" CHAR(40),
-                      \"WORKING_AREA\" CHAR(35),
-                      \"COMMISSION\" NUMBER(10,2),
-                      \"PHONE_NO\" CHAR(15),
-                      \"COUNTRY\" VARCHAR2(25))"]))
+  (jdbc/execute! ds ["CREATE TABLE AGENTS (
+                      AGENT_CODE CHAR(6) NOT NULL PRIMARY KEY,
+                      AGENT_NAME CHAR(40),
+                      WORKING_AREA CHAR(35),
+                      COMMISSION NUMBER(10,2),
+                      PHONE_NO CHAR(15),
+                      COUNTRY VARCHAR2(25))"]))
 
 (comment
   (jdbc/execute-one! ds ["INSERT INTO AGENTS VALUES ('A007', 'Ramasundar', 'Bangalore', '0.15', '077-25814763', 'India')"])
