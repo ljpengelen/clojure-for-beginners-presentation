@@ -941,3 +941,177 @@ get-american-agents
 ;; - https://www.braveclojure.com/
 ;; - https://aphyr.com/tags/Clojure-from-the-ground-up
 ;; - http://clojurescriptkoans.com/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;  888888ba           dP                                                dP       oo                     
+;;  88    `8b          88                                                88                              
+;; a88aaaa8P' .d8888b. 88 dP    dP 88d8b.d8b. .d8888b. 88d888b. 88d888b. 88d888b. dP .d8888b. 88d8b.d8b. 
+;;  88        88'  `88 88 88    88 88'`88'`88 88'  `88 88'  `88 88'  `88 88'  `88 88 Y8ooooo. 88'`88'`88 
+;;  88        88.  .88 88 88.  .88 88  88  88 88.  .88 88       88.  .88 88    88 88       88 88  88  88 
+;;  dP        `88888P' dP `8888P88 dP  dP  dP `88888P' dP       88Y888P' dP    dP dP `88888P' dP  dP  dP 
+;;                             .88                              88                                       
+;;                         d8888P                               dP                                       
+
+;; Clojure supports polymorphic functions in various ways
+
+;; A function is polymorphic if it can be applied to various types
+
+(ns poly-mm) ;; We're starting a new namespace here, so we can reuse function names later on
+
+;; The following functions return different types of
+;; shapes in the form of plain maps
+
+(defn circle [x y r]
+  {:type :circle
+   :x x
+   :y y
+   :r r})
+
+(defn rectangle [x y w h]
+  {:type :rectangle
+   :x x
+   :y y
+   :w w
+   :h h})
+
+(defn square [x y d] (rectangle x y d d))
+
+;; Multimethods provide one way of creating polymorphic functions
+
+;; We'll introduce two functions, area and circumference, that can
+;; be applied to the shapes created by the functions above
+
+(defmulti area :type)
+
+(defmulti circumference :type)
+
+;; This will fail because we haven't provided an implementation
+;; for any of the shapes yet
+
+(area (circle 1 2 12))
+
+(circumference (square 3 4 34))
+
+;; We can define implementations for types of shapes as follows
+
+(defmethod area :circle [{:keys [r]}] (* Math/PI (Math/pow r 2)))
+(defmethod area :rectangle [{:keys [w h]}] (* w h))
+
+(defmethod circumference :circle [{:keys [r]}] (* 2 Math/PI r))
+(defmethod circumference :rectangle [{:keys [w h]}] (+ (* 2 w) (* 2 h)))
+
+;; After defining the implementations, the following expressions can
+;; be evaluated
+
+(area (circle 1 2 3))
+(area (rectangle 3 4 5 6))
+
+(circumference (circle 3 4 5))
+(circumference (rectangle 7 8 9 10))
+
+;; You can extend someone else's multimethod, even when
+;; you're not able to compile the other person's code
+
+;; Multimethods can dispatch on any value computed from
+;; the input
+;;
+;; In the example above, we used to keyword :shape as
+;; dispatch function. This could have been any function
+
+;; Multimethods provide great extensibility, but sometimes
+;; you might need something more performant. This is where
+;; protocols, records, and deftype come into play
+
+(ns poly-records) ;; New namespace, to reuse function names used above without name clashes
+
+;; We define a protocol shape. Each implementation of the protocol
+;; must provide the functions area and circumference
+
+(defprotocol Shape
+  (area [this] "Calculate area of shape")
+  (circumference [this] "Calculate circumference of shape"))
+
+;; We define a record type Rectangle
+
+(defrecord Rectangle [x y w h])
+
+;; Records are map-like datatypes
+
+(def r1 (Rectangle. 12 34 56 78))
+
+(:x r1)
+
+;; Adding a new value to a record produces a record
+
+(assoc r1 :whatever "some value")
+
+;; Removing a value from a record produces a map
+
+(dissoc r1 :x)
+
+;; Records cannot be used as functions
+
+(r1 :y)
+
+;; Records can implement protocols
+
+(defrecord Circle [x y r]
+  Shape
+  (area [{:keys [r]}] (* Math/PI (Math/pow r 2)))
+  (circumference [{:keys [r]}] (* 2 Math/PI r)))
+
+(def c1 (Circle. 12 34 56))
+
+(area c1)
+(circumference c1)
+
+;; We can extend a protocol with implementations
+;; for a given record type after defining the
+;; record type
+
+(extend-protocol Shape
+  Rectangle
+  (area [{:keys [w h]}] (* w h))
+  (circumference [{:keys [w h]}] (+ (* 2 w) (* 2 h))))
+
+(area r1)
+(circumference r1)
+
+;; You can extend someone else's protocol, again
+;; without the need to recompile the other
+;; person's code
+
+(ns poly-types)
+
+;; Sometimes you want to introduce a new type for
+;; which it doesn't make sense that all instances
+;; are (also) maps. This is where deftype comes
+;; into play
+
+;; Generally speaking, records are for concepts in the
+;; application domain, and types are for concepts in
+;; the programming domain
+
+(defprotocol Unwrappable
+  (unwrap [this] "Unwraps a wrapped object"))
+
+(deftype Wrapper [o]
+  Unwrappable
+  (unwrap [_] o))
+
+(def wrapped-string (Wrapper. "wrap me"))
+
+(unwrap wrapped-string)
