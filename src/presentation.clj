@@ -1115,3 +1115,137 @@ get-american-agents
 (def wrapped-string (Wrapper. "wrap me"))
 
 (unwrap wrapped-string)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; .d88888b                             
+;; 88.    "'                            
+;; `Y88888b. 88d888b. .d8888b. .d8888b. 
+;;       `8b 88'  `88 88ooood8 88'  `"" 
+;; d8'   .8P 88.  .88 88.  ... 88.  ... 
+;;  Y88888P  88Y888P' `88888P' `88888P' 
+;;           88                         
+;;           dP                         
+
+;; Clojure is a dynamic language that doesn't offer
+;; compile-time type checking
+
+;; It does offer spec, which is a library for specifying,
+;; validating and conforming the structure of your data
+;; at runtime
+
+(require '[clojure.spec.alpha :as s])
+
+;; We'll specify the structure of simple domain events
+
+;; First, we specify the two valid event types
+
+(s/def :domain-events/event-type #{:password-changed :account-removed})
+
+;; Second, we specify that user IDs are positive integers
+
+(s/def :domain-events/user-id pos-int?)
+
+;; Last, we specify that domain events are maps, with one
+;; required unqualified (req-un) key for the type and one
+;; optional unqualified (opt-un) key for the user ID
+
+(s/def :domain-events/domain-event-map (s/keys :req-un [:domain-events/event-type]
+                                               :opt-un [:domain-events/user-id]))
+
+(def valid-password-change {:event-type :password-changed
+                            :user-id 123
+                            :new-password "admin"})
+(def valid-account-removal {:event-type :account-removed
+                            :user-id 123})
+(def invalid-password-change {:event-type :password-changed
+                              :user-id "admin"})
+(def non-existing-event {:event-type :something-else-happened})
+
+;; The function valid? indicates whether or not data meets
+;; the given specification
+
+(s/valid? :domain-events/domain-event-map valid-password-change)
+(s/valid? :domain-events/domain-event-map valid-account-removal)
+(s/valid? :domain-events/domain-event-map invalid-password-change)
+(s/valid? :domain-events/domain-event-map non-existing-event)
+
+;; The function conform returns the provided data when it meets
+;; its specification and :clojure.spec.alpha/invalid otherwise
+
+(s/conform :domain-events/domain-event-map valid-password-change)
+(s/conform :domain-events/domain-event-map invalid-password-change)
+
+;; When spec asserts are enabled, the function assert returns the
+;; provided data when it meets it specification and throws an
+;; exception otherwise.
+;; When spec asserts are enabled, the function always returns the
+;; provided data
+
+(s/assert :domain-events/domain-event-map valid-password-change)
+(s/assert :domain-events/domain-event-map invalid-password-change)
+
+(comment
+  (s/check-asserts true)
+  (s/check-asserts false))
+
+;; You can use specs to generate data, for example for use in tests
+
+(require '[clojure.spec.gen.alpha :as gen])
+
+(gen/generate (s/gen :domain-events/domain-event-map))
+(gen/sample (s/gen :domain-events/domain-event-map))
+
+;; Spec offers functionality to specify the structure of vectors too.
+;; Suppose we want to model the domain events above as vectors
+
+(def valid-password-change-vector [:password-changed 123 "admin"])
+(def invalid-password-change-vector [:password-changed "admin" "admin"])
+(def valid-account-removal-vector [:account-removed 123])
+(def invalid-account-removal-vector [:account-removed])
+
+;; The password-changed event consists of the keyword :password-changed followed
+;; by a positive integer and a string
+
+(s/def :domain-events/password-changed (s/tuple #{:password-changed} pos-int? string?))
+
+;; The account-removed event consists of the keyword :account-removed followed by a
+;; positive integer
+
+;; The difference between tuple and cat will be apparent when conforming
+
+(s/def :domain-events/account-removed (s/cat :event-type #{:account-removed}
+                                             :user-id pos-int?))
+
+;; A domain-event vector is either a password change or an account removal
+
+(s/def :domain-events/domain-event-vector (s/or :password-changed :domain-events/password-changed
+                                                :account-removed :domain-events/account-removed))
+
+(s/valid? :domain-events/domain-event-vector valid-password-change-vector)
+(s/valid? :domain-events/domain-event-vector invalid-password-change-vector)
+(s/valid? :domain-events/domain-event-vector valid-account-removal-vector)
+(s/valid? :domain-events/domain-event-vector invalid-account-removal-vector)
+
+(s/conform :domain-events/domain-event-vector valid-password-change-vector)
+(s/conform :domain-events/domain-event-vector valid-account-removal-vector)
+
+(gen/generate (s/gen :domain-events/domain-event-vector))
+
+;; Generally speaking, you use spec sparingly and only apply it to verify
+;; the structure of complex data.
+
+;; Many front-end projects store their global state in one place. Spec
+;; comes in handy when trying to keep this data sound, for example.
