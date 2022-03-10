@@ -607,7 +607,7 @@ modified-map ;; Reuses complex-map under the hood
 (hello-world {})
 
 (comment
-  (def stop-hello-world! (http-kit/run-server hello-world {:port 3000 :join? false}))
+  (def stop-hello-world! (http-kit/run-server hello-world {:port 3002 :join? false}))
   (stop-hello-world!))
 
 ;; Using the request map, the hard way
@@ -618,7 +618,7 @@ modified-map ;; Reuses complex-map under the hood
 (hello-name {:uri "/world"})
 
 (comment
-  (def stop-hello-name! (http-kit/run-server hello-name {:port 3000 :join? false}))
+  (def stop-hello-name! (http-kit/run-server hello-name {:port 3002 :join? false}))
   (stop-hello-name!))
 
 ;; Using the request map with a routing library
@@ -632,7 +632,7 @@ modified-map ;; Reuses complex-map under the hood
   (route/not-found "Page not found"))
 
 (comment
-  (def stop-with-compojure! (http-kit/run-server hello-with-compojure {:port 3000 :join? false}))
+  (def stop-with-compojure! (http-kit/run-server hello-with-compojure {:port 3002 :join? false}))
   (stop-with-compojure!))
 
 ;; Examining a route
@@ -697,7 +697,7 @@ modified-map ;; Reuses complex-map under the hood
           [:a {:href "https://en.wikipedia.org/wiki/Seven_Dwarfs"} "More about these dwarfs"])})
 
 (comment
-  (def stop-dwarfs-app! (http-kit/run-server dwarfs-app {:port 3000 :join? false}))
+  (def stop-dwarfs-app! (http-kit/run-server dwarfs-app {:port 3002 :join? false}))
   (stop-dwarfs-app!))
 
 
@@ -880,7 +880,7 @@ get-american-agents
   (agents-app {:uri "/country/phone_no"}))
 
 (comment
-  (def stop-agents-app! (http-kit/run-server agents-app {:port 3000 :join? false}))
+  (def stop-agents-app! (http-kit/run-server agents-app {:port 3002 :join? false}))
   (stop-agents-app!))
 
 
