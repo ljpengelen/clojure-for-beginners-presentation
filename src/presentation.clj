@@ -100,6 +100,8 @@
 
 (map (fn [x] (* x x)) (filter even? [1 2 3 4]))
 
+(map (fn [x] (println "x is equal to" x) (* x x)) (filter even? [1 2 3 4]))
+
 
 
 
