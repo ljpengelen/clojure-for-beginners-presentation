@@ -1023,7 +1023,7 @@ get-american-agents
 (circumference (rectangle 7 8 9 10))
 
 ;; You can extend someone else's multimethod, even when
-;; you're not able to compile the other person's code
+;; you're not able to recompile the other person's code
 
 ;; Multimethods can dispatch on any value computed from
 ;; the input
@@ -1037,7 +1037,7 @@ get-american-agents
 
 (ns poly-records) ;; New namespace, to reuse function names used above without name clashes
 
-;; We define a protocol shape. Each implementation of the protocol
+;; We define a protocol Shape. Each implementation of the protocol
 ;; must provide the functions area and circumference
 
 (defprotocol Shape
@@ -1191,7 +1191,7 @@ get-american-agents
 ;; When spec asserts are enabled, the function assert returns the
 ;; provided data when it meets it specification and throws an
 ;; exception otherwise.
-;; When spec asserts are enabled, the function always returns the
+;; When spec asserts are disabled, the function always returns the
 ;; provided data
 
 (s/assert :domain-events/domain-event-map valid-password-change)
