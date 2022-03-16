@@ -121,8 +121,8 @@
 
 ;; Clojure is a programming language that is
 ;;
-;; - Pragmatic
 ;; - Functional
+;; - Pragmatic
 ;; - Dynamically typed
 ;; - A Lisp
 ;; - Equiped with persistent, immutable data structures
