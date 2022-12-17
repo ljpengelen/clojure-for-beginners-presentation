@@ -66,18 +66,32 @@
   "
    // Imperative JavaScript
 
-   const input = [1, 2, 3, 4];
+   const input = [0, 1];
    const output = [];
-   for (let i = 0; i < input.length; ++i) {
-     const current = input[i];
-     if (current % 2 == 0) {
-       output.push(current * current);
-     }
+   for (let i = 0; i < 10; ++i) {
+     output.push(input[0]);
+     const next = input[0] + input[1];
+     input[0] = input[1];
+     input[1] = next;
    }
    output;
 ")
 
-(map (fn [x] (* x x)) (filter even? [1 2 3 4]))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(take 10 (map first (iterate (fn [[x y]] [y (+ x y)]) [0 1])))
 
 
 
@@ -93,16 +107,20 @@
 
 
 
-(even? 10)
-(even? 11)
-(filter even? [1 2 3 4])
-(filter odd? [1 2 3 4])
+(take 2 [0 1 2 3])
 (map str [4 64])
 (map inc [4 64])
+(first [1 2 3 4])
+(iterate inc 0)
 
-(map (fn [x] (* x x)) (filter even? [1 2 3 4]))
+(defn fib-step [[x y]]
+  [y (+ x y)])
 
-(map (fn [x] (println "x is equal to" x) (* x x)) (filter even? [1 2 3 4]))
+(fib-step [11 100])
+
+(take 10 (map first (iterate (fn [[x y]] [y (+ x y)]) [0 1])))
+
+(println (take 10 (map first (iterate (fn [[x y]] [y (+ x y)]) [0 1]))))
 
 
 
