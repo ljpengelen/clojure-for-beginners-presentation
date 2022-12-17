@@ -60,7 +60,7 @@
 
 
 
-
+;; A JavaScript program that computes the first 10 Fibonacci numbers
 
 (comment
   "
@@ -89,7 +89,7 @@
 
 
 
-
+;; A Clojure program that computes the first 10 Fibonacci numbers
 
 (take 10 (map first (iterate (fn [[x y]] [y (+ x y)]) [0 1])))
 
@@ -105,7 +105,7 @@
 
 
 
-
+;; Breaking down the expression above
 
 (take 2 [0 1 2 3])
 (map str [4 64])
@@ -118,7 +118,13 @@
 
 (fib-step [11 100])
 
+;; The end result again
+
 (take 10 (map first (iterate (fn [[x y]] [y (+ x y)]) [0 1])))
+
+;; Evaluating the following expression prints the first 10 Fibonacci numbers, which is a side effect.
+;; Generally speaking, side effects should be avoided as much as possible.
+;; However, when they are needed, the language does not stand in your way.
 
 (println (take 10 (map first (iterate (fn [[x y]] [y (+ x y)]) [0 1]))))
 
