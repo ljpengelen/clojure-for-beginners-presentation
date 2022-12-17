@@ -141,6 +141,28 @@
 
 
 
+;; Writing and reading expression "inside out" or from right to left can be cumbersome.
+;; The thread-last macro can help.
+;; There's more about macro's later on.
+
+(->> [0 1]
+     (iterate (fn [[x y]] [y (+ x y)]))
+     (map first)
+     (take 10))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ;; What is Clojure?
 ;; ================
