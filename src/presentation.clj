@@ -137,6 +137,8 @@
 ;;
 ;; - ClojureScript, which compiles to JavaScript
 ;; - ClojureCLR, which is hosted on .Net's CLR
+;; - ClojureDart, which compiles to Dart
+;; - Babashka, a fast starting Clojure interpreter for scripting
 
 
 
