@@ -329,6 +329,10 @@ nil
 
 (:two {:two "Two"})
 
+;; Vectors are functions
+
+([1 2] 0)
+
 ;; Defining a function
 
 (defn sqr [x] (* x x))
