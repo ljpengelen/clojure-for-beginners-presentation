@@ -150,6 +150,8 @@
      (map first)
      (take 10))
 
+;; Because Clojure programs are expressed in terms of Clojure datastructures,
+;; macro's (which transform expressions) can be implemented using plain Clojure
 
 
 
