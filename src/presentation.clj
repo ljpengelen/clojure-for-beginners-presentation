@@ -311,6 +311,7 @@ nil
 (true? false)
 (true? nil)
 (Math/sqrt 9)
+(java.time.Instant/now)
 (reverse "abcde")
 
 (require '[clojure.string :as string])
