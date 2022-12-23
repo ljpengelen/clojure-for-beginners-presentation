@@ -1165,16 +1165,43 @@ get-american-agents
 ;; application domain, and types are for concepts in
 ;; the programming domain
 
-(defprotocol Unwrappable
+(defprotocol Wrapped
   (unwrap [this] "Unwraps a wrapped object"))
 
 (deftype Wrapper [o]
-  Unwrappable
+  Wrapped
   (unwrap [_] o))
 
 (def wrapped-string (Wrapper. "wrap me"))
 
 (unwrap wrapped-string)
+
+;; As we've seen above, we could also use defrecord
+;; to introduce a datatype that implements the
+;; protocol Wrapped
+
+(defrecord WrapperAsRecord [o]
+  Wrapped
+  (unwrap [_] o))
+
+(def wrapped-string-as-record (WrapperAsRecord. "wrap me too"))
+
+(unwrap wrapped-string-as-record)
+
+;; One difference between the two instances created is
+;; their representation when evaluated
+
+wrapped-string
+wrapped-string-as-record
+
+;; Another difference is the default implementation
+;; of equality
+
+(= wrapped-string (Wrapper. "wrap me"))
+(= wrapped-string wrapped-string)
+
+(= wrapped-string-as-record (WrapperAsRecord. "wrap me too"))
+(= wrapped-string-as-record wrapped-string-as-record)
 
 
 
