@@ -176,7 +176,7 @@
 ;; - Dynamically typed
 ;; - A Lisp
 ;; - Equiped with persistent, immutable data structures
-;; - Tailered towards applying functions from the extensive
+;; - Tailored towards applying functions from the extensive
 ;;   standard library on those data structures
 ;; - Suited for REPL-driven development
 ;; - Hosted on Java's JVM
