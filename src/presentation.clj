@@ -39,6 +39,11 @@
 
 
 
+
+
+
+
+
 ;; What is Clojure?
 ;; ================
 
@@ -47,6 +52,13 @@
 ;; - Functional
 ;; - Pragmatic
 ;; - ...
+
+
+
+
+
+
+
 
 
 
@@ -89,9 +101,23 @@
 
 
 
+
+
+
+
+
+
+
 ;; A Clojure program that computes the first 10 Fibonacci numbers
 
 (take 10 (map first (iterate (fn [[x y]] [y (+ x y)]) [0 1])))
+
+
+
+
+
+
+
 
 
 
@@ -141,6 +167,12 @@
 
 
 
+
+
+
+
+
+
 ;; Writing and reading expression "inside out" or from right to left can be cumbersome.
 ;; The thread-last macro can help.
 ;; There's more about macro's later on.
@@ -152,6 +184,12 @@
 
 ;; Because Clojure programs are expressed in terms of Clojure datastructures,
 ;; macro's (which transform expressions) can be implemented using plain Clojure
+
+
+
+
+
+
 
 
 
@@ -187,6 +225,11 @@
 ;; - ClojureCLR, which is hosted on .Net's CLR
 ;; - ClojureDart, which compiles to Dart
 ;; - Babashka, a fast starting Clojure interpreter for scripting
+
+
+
+
+
 
 
 
@@ -280,6 +323,10 @@ nil
 
 ()
 '(1 2 3)
+
+
+
+
 
 
 
@@ -411,12 +458,22 @@ nil
 
 
 
+
+
+
+
+
 ;; Try this at home
 ;; ================
 
 ;; Visit https://cfb.cofx.nl/ and try the first few exercises.
 ;; 
 ;; Stop when you see '->>'.
+
+
+
+
+
 
 
 
@@ -518,10 +575,20 @@ nil
 
 
 
+
+
+
+
+
 ;; Try this at home
 ;; ================
 
 ;; Visit https://cfb.cofx.nl/ and try the next three exercises.
+
+
+
+
+
 
 
 
@@ -596,6 +663,11 @@ modified-map ;; Reuses complex-map under the hood
 ;; Sticking to these data structures 
 ;; - allows use of the rich standard library
 ;; - elimates the need to introduce boilerplate classes
+
+
+
+
+
 
 
 
@@ -724,6 +796,11 @@ modified-map ;; Reuses complex-map under the hood
 
 
 
+
+
+
+
+
 ;; Generating HTML from vectors
 ;; ============================
 
@@ -759,6 +836,15 @@ modified-map ;; Reuses complex-map under the hood
 (comment
   (def stop-dwarfs-app! (http-kit/run-server dwarfs-app {:port 3002 :join? false}))
   (stop-dwarfs-app!))
+
+
+
+
+
+
+
+
+
 
 
 
@@ -889,6 +975,10 @@ get-american-agents
 
 
 
+
+
+
+
 ;; Combining what we've seen
 ;; =========================
 
@@ -957,6 +1047,11 @@ get-american-agents
 
 
 
+
+
+
+
+
 ;; Front-end development
 ;; =====================
 
@@ -965,6 +1060,11 @@ get-american-agents
 ;; creating SPAs:
 
 ;; https://github.com/ljpengelen/clojurescipt-rsi
+
+
+
+
+
 
 
 
@@ -1001,6 +1101,11 @@ get-american-agents
 ;; - https://www.braveclojure.com/
 ;; - https://aphyr.com/tags/Clojure-from-the-ground-up
 ;; - http://clojurescriptkoans.com/
+
+
+
+
+
 
 
 
@@ -1202,6 +1307,11 @@ wrapped-string-as-record
 
 (= wrapped-string-as-record (WrapperAsRecord. "wrap me too"))
 (= wrapped-string-as-record wrapped-string-as-record)
+
+
+
+
+
 
 
 
