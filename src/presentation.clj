@@ -139,8 +139,7 @@
 (first [1 2 3 4])
 (iterate inc 0)
 
-(defn fib-step [[x y]]
-  [y (+ x y)])
+(def fib-step (fn [[x y]] [y (+ x y)]))
 
 (fib-step [11 100])
 
