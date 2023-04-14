@@ -1165,9 +1165,9 @@ get-american-agents
 ;; This will fail because we haven't provided an implementation
 ;; for any of the shapes yet
 
-(area (circle 1 2 12))
-
-(circumference (square 3 4 34))
+(comment
+  (area (circle 1 2 12)) 
+  (circumference (square 3 4 34)))
 
 ;; We can define implementations for types of shapes as follows
 
@@ -1228,7 +1228,8 @@ get-american-agents
 
 ;; Records cannot be used as functions
 
-(r1 :y)
+(comment
+  (r1 :y))
 
 ;; Records can implement protocols
 
